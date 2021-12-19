@@ -1,0 +1,103 @@
+let walkin = [500, 400, 250, 150];
+let myStu1;
+
+let pos;
+let velX;
+let velY;
+let y;
+
+function setup() {
+  createCanvas(800, 600);
+  // walkin array
+  //walkin [0] = createVector (0, 500);
+  //walkin [1] = createVector (0, 400);
+  //walkin [2] = createVector (0, 250);
+  //walkin [3] = createVector (0, 100);
+  
+  //pos = createVector (0, 50);
+  //velX = createVector (1, 0);
+  //velY = createVector (0, 1);
+  
+  myStu1 = new walkIn (170, 250);
+  myStu2 = new walkIn (170, 150);
+}
+
+function draw() {
+  background(220);
+
+  noStroke();
+  fill (100);
+  /*
+  WalkIn (250);
+  WalkIn (150);
+  */
+  
+  myStu1.update ();
+  myStu2.update ();
+  myStu1.show ();
+  myStu2.show ();
+}
+
+class walkIn { // stu seek their chairs
+  constructor(x, y) {
+    this.stu = createVector(0, 50); // (170, 50)
+    this.chair = createVector(x, y); // (170, [i])
+    this.pos = p5.Vector.sub (this.chair, this.stu); // (0, [i] - 50)
+    
+    this.velX = createVector(1, 0);
+    this.velY = createVector(0, 1);
+	//this.vel.mult(10);
+    this.r = 10;
+  }
+  
+  update() {
+    
+    this.pos.add(this.velX);
+    /*
+    if (this.stu.x >= 170) {
+      this.stu.sub(this.velX);
+      this.pos.add(this.velY);
+    }
+    if (this.pos.y >= y) {
+      this.pos.sub(this.velY);
+    }
+    */
+  }
+
+  show() {
+    
+    stroke(0);
+    strokeWeight(2);
+    fill(255, 100);
+    push();
+    translate(this.chair.x, this.chair.y);
+    if (this.stu.x <= 170) {
+      this.angle = 0;
+    } else {
+      this.angle = this.velY.heading();
+    }
+    rotate(this.angle);
+    triangle (this.r + 8, this.r - 10, this.r - 20, this.r - 17, this.r - 15, this.r - 5);
+    print (this.chair.x, this.chair.y);
+    pop();
+    
+  }
+  
+}
+
+/*
+function WalkIn (y) {
+  pos.add(velX);
+  triangle (pos.x, pos.y, pos.x + 20, pos.y + 7, pos.x, pos.y + 14);
+  if (pos.x >= 170) { 
+    pos.sub (velX);
+    pos.add (velY);
+    if (pos.y >= y) {
+      pos.sub (velY);
+      triangle (pos.x, pos.y, pos.x + 20, pos.y + 7, pos.x, pos.y + 14);
+    }
+  }
+  print (pos.x, pos.y);
+}
+  
+*/
