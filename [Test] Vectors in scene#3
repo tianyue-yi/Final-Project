@@ -1,0 +1,63 @@
+let plane;
+
+function setup() {
+  createCanvas(400, 400);
+  plane = new paperAirplane (300, 0);
+}
+
+function draw() {
+  background(220);
+  plane.display();
+  plane.update();
+}
+
+
+class paperAirplane {
+  constructor (x, y) {
+    this.history = [];
+    this.x = x;
+    this.y = y;
+  }
+  
+  update() {
+    let r = 300;
+    let n = 10;
+    let angle = 0;
+    let v = createVector (this.x, this.y);
+    this.x += -30 * cos(0.2);
+    this.y += 30 * sin(0.2);
+    /*
+    for (let i = 0; i < 20; i++) {
+      this.x += (r - 0.2 * i) * cos(angle + 0.2 * i);
+      this.y += (r - 0.2 * i) * sin(angle + 0.2 * i);
+      noFill ();
+      stroke (0);
+      strokeWeight (3);
+      triangle (this.x, this.y, this.x + 20, this.y, this.x + 10, this.y - 30);
+    }
+    */
+    
+    /*
+    for (let i = 0; i < n; i ++) {
+      this.x = cos(i * 0.05) * 100 * map(i, 0, n, 1, 0.5) + width / 2;
+      this.y = sin(i * 0.05) * 20 + map(i, 0, n, 100, 300);
+      let v = createVector (this.x, this.y);
+      this.history.push(v);
+      print (this.history);
+    }
+    */
+    
+    this.history.push (v);
+    print (this.history);
+    if (this.history.lengh > 25) {
+      this.history.splice (0, 1);
+    }
+  }
+  
+  display () {
+    stroke (0);
+    strokeWeight (3);
+    noFill();
+    triangle (this.x, this.y, this.x + 20, this.y, this.x + 10, this.y - 30);
+  }
+}
