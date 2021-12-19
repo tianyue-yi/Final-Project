@@ -1,0 +1,189 @@
+let stu;
+let x = 140;
+let y1 = 130;
+let y2 = 230;
+let speed;
+let mP; // mouse pressed in scene 1
+let click = 0;
+let font;
+
+function preload() {
+
+  stu1 = loadAnimation ('stu_anismaller1.png', 'stu_anismaller3.png', 'stu_anismaller1.png', 'stu_anismaller2.png');
+  stu2 = loadAnimation ('stu_anismaller1.png', 'stu_anismaller2.png', 'stu_anismaller1.png', 'stu_anismaller3.png');
+  snap11 = loadImage ('stu_anismaller3.png');
+  snap12 = loadImage ('stu_anismaller2.png');
+  // Scene 2
+  yawn = loadAnimation ('stu_yawn0.png', 'stu_yawn1.png', 'stu_yawn2.png', 'stu_yawn3.png');
+  
+  font = loadFont ('Century Gothic Bold.otf');
+}
+
+function setup() {
+  createCanvas(800, 600);
+  frameRate(10);
+  speed = 0.8;
+  mP = false;
+}
+
+function draw () {
+  background (220);
+  classroom ();
+  yawn.draw (200, 300);
+  
+  if (millis() > 3000) { // first scene happens automatically after 2s
+    chatting ();
+    frame (mouseX, mouseY);
+    
+    if (click == 1) { // The first bulletin board
+      if (y1 + 75 > y2) { // Approaching
+        firstBoard ();
+      }
+    }
+    
+    if (click == 2) {
+      distraction_1 ();
+    }
+    
+    
+  }
+
+}
+
+function mousePressed () {
+  click ++;
+  print (click);
+}
+
+//My functions
+
+function classroom () {
+  for (let i = 170; i < 500; i += 200) {
+    for (let j = 100; j < 400; j += 250) { // 4 tables and 4 chairs
+      noFill ();
+      stroke (150);
+      strokeWeight (2);
+      rect (i, j, 60, 200); // tables
+      rect (i - 30, j + 30 , 30, 45);
+      rect (i - 30, j + 30 , 10, 45);
+      rect (i - 30, j + 130 , 30, 45)
+      rect (i - 30, j + 130 , 10, 45); // 2 chairs for each table
+      stu1.draw (i, j + 50);
+      stu2.draw (i, j + 150);
+      stu1.frameDelay = 10;
+      stu2.frameDelay = 10;
+    }
+  }
+}
+
+function frame (x, y) { // A frame to capture specific movements in class
+  for (let i = 0; i < 3; i++) {
+    stroke (0);
+    strokeWeight (4);
+    line (x, y, x + 10, y);
+    line (x, y + 160, x + 10, y + 160);
+    x += 40;
+    //y += i + 10;
+  }
+  for (let j = 0; j < 4; j++) {
+    line (x - 120, y, x - 120, y + 10);
+    line (x, y, x, y + 10);
+    y += 50;
+  }
+}
+
+function chatting () {
+  let x_c = 140;
+  let y1_c = 130;
+  let y2_c = 230;
+  noStroke ();
+  fill (220);
+  rect (0, 0, 230, 300); // redraw the area - I'm looking for a better way 
+  stroke (150);
+  strokeWeight (2);
+  rect (170, 100, 60, 200); // table
+
+  fill (220);
+  noStroke ();
+  rect (140, 100, 30, 180); // clear a small area
+  stroke (150);
+  strokeWeight (2);
+  rect (x_c, y1_c, 30, 45); 
+  rect (x_c, y1_c, 10, 45); 
+  rect (x_c, y2_c, 30, 45); 
+  rect (x_c, y2_c, 10, 45);
+  stu1.draw (x_c + 30, y1_c + 20);
+  stu2.draw (x_c + 30, y2_c + 20);
+  
+  y1_c += speed;
+  y2_c -= speed;
+  
+  if (y1_c + 45 > y2_c || y1_c < 130) {
+    speed = -speed;
+  }
+
+}
+
+function bulletinBoard () {
+  fill (220);
+  stroke(20); 
+  strokeWeight (15);
+  rect (200, 150, 550, 350);
+  noStroke();
+  fill (91, 10, 145);
+  rect (205, 400, 350, 70);
+}
+
+function firstBoard () {
+  fill (0, 180);
+  noStroke ();
+  rect (0, 0, width, height);
+
+  bulletinBoard();
+  noFill();
+  stroke (150);
+  strokeWeight (3);
+  rect (390, 200, 60, 200); // table
+  stroke (150);
+  strokeWeight (2.5);
+  rect (360, 265, 30, 45); 
+  rect (360, 265, 10, 45); 
+  rect (360, 310, 30, 45); 
+  rect (360, 310, 10, 45); // two chairs
+  image (snap11, 365, 255, 55, 64);
+  image (snap12, 365, 300, 55, 64);
+  frame (mouseX, mouseY);
+
+  fill (255);
+  noStroke ();
+  textSize (40);
+  textFont (font);
+  text ("NICE CHAT!", 250, 450);
+}
+
+function distraction_1 () {
+  let x_d = 140;
+  let y1_d = 130;
+  let y2_d = 230;
+  
+  fill (220);
+  noStroke();
+  rect (0, 0, 170, 500); // update areas of chairs by redraw rectangles on top
+  noFill();
+  stroke (150);
+  strokeWeight(2);
+  rect (170, 100, 60, 200); // table
+  rect (140, 130, 30, 45); 
+  rect (140, 130, 10, 45); 
+  rect (140, 185, 30, 45); 
+  rect (140, 185, 10, 45); // two chairs on the upper left corner
+  
+  // a stu in the lower left corner being attracted by them
+  rect (x_d, y2_d + 250, 30, 45);
+  rect (x_d, y2_d + 250, 10, 45);
+  y2_d -= speed;
+  
+  if (y2 < 0) {
+    y2_d += speed;
+  }
+}
