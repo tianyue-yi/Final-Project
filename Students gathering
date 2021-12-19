@@ -1,0 +1,35 @@
+let stu;
+let x = 140;
+let y1 = 130;
+let y2 = 230;
+let speed;
+
+function setup() {
+  createCanvas(400, 600);
+  speed = 0.8;
+}
+
+function draw() {
+  background(220);
+  fill(220);
+  noStroke ();
+  rect (0, 0, 170, 500); // update areas of chairs by redraw rectangles on top
+  noFill();
+  stroke (150);
+  strokeWeight(2);
+  rect (170, 100, 60, 200); // table
+  rect (140, 130, 30, 45); 
+  rect (140, 130, 10, 45); 
+  rect (140, 185, 30, 45); 
+  rect (140, 185, 10, 45); // two chairs on the upper left corner
+  
+  // a stu in the lower left corner being attracted by them
+  rect (x, y2 + 250, 30, 45);
+  rect (x, y2 + 250, 10, 45);
+  y2 -= speed;
+  
+  if (y2 < 0) {
+    y2 += speed;
+  }
+  print (y2);
+}
