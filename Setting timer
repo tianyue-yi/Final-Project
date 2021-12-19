@@ -1,0 +1,35 @@
+let allSet = false;
+let scene = 1;
+let timeCount = 0;
+
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background(220);
+  if (millis() - timeCount > 2000) {
+    rect (50, 50, 50)
+    
+    if (scene == 1) {
+      if (allSet) {
+        background (0, 255, 0);
+        
+      }
+      
+    }
+  }
+  
+  //timeCount = millis();
+  //scene ++;
+
+}
+
+function mousePressed () {
+  if (allSet) {
+     allSet = false;
+  } else {
+    allSet = true;
+  }
+ 
+}
