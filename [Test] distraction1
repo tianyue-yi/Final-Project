@@ -1,0 +1,24 @@
+let y_;
+
+function setup() {
+  createCanvas(600, 600);
+  y_ = 400;
+}
+
+function draw() {
+  background(220);
+  let goingUp = 1.1;
+  
+  noFill ();
+  stroke (150);
+  strokeWeight (2);
+  rect (170, y_, 30, 45);
+  
+  if (y_ < 300) {
+    goingUp = 0;
+  } else {
+    y_ -= goingUp; // probably bc speed = -speed after calling chat2 
+  }
+     
+  print (millis());
+}
