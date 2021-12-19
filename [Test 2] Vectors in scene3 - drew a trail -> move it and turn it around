@@ -1,0 +1,81 @@
+let plane;
+
+function setup() {
+  createCanvas(400, 400);
+  plane = new paperAirplane (300, 0);
+}
+
+function draw() {
+  background(220);
+  plane.update ();
+  
+  plane.spin ();
+  plane.display();
+  
+}
+
+class paperAirplane {
+  constructor (x, y) {
+    this.history = [];
+    
+    this.loc = createVector (x, y);
+    this.velocity = createVector (0, -2);
+    
+    this.a = createVector (0, 0);
+    this.maxspeed = 8;
+    this.maxforce = 0.2;
+  }
+  
+  spin () { // similar as "seek"
+    let n = 500;
+    //let spiral = p5.Vector.sub(target, this.loc);
+    let angle = 0;
+    //spiral.setMag (this.maxspeed);
+    
+    
+    for (let t = 0; t < n; t++) {
+      this.x = cos(angle * 0.03) * 100 * map(t, 0, n, 1, 0.5) + width / 2;
+      this.y = sin(angle * 0.03) * 20 + map(t, 0, n, 100, 300);
+      angle += 0.1;
+      triangle (this.x, this.y, this.x + 10, this.y, this.x + 5, this.y - 15)
+    }
+    print (this.x, this.y);
+  }
+  
+  update () {
+    this.velocity.add(this.a);
+    this.velocity.limit(this.maxspeed);
+    this.loc.add(this.velocity);
+    this.a.mult(0);
+    
+    //let v = createVector (this.x, this.y);
+    //this.history.push(v);
+    print (this.x, this.y);
+  }
+  
+  display () {
+    stroke (0);
+    strokeWeight (3);
+    noFill();
+    
+    for (let i = 0; i < this.history.length; i++) {
+      let pos = this.history [i];
+      triangle (pos.x, pos.y, pos.x + 20, pos.y, pos.x + 10, pos.y - 30);
+    }
+    
+  }
+  
+}
+
+/*
+let n = 500;
+    for (let t = 0; t < n; t++) {
+      //background (220);
+      // adding width/2 to center the spiral
+      x = cos(t * 0.03) * 100 * map(t, 0, n, 1, 0.5) + width / 2;
+      y = sin(t * 0.03) * 20 + map(t, 0, n, 100, 300);
+      fill(0);
+      triangle (x, y, x + 10, y, x + 5, y - 15)
+      //ellipse(x, y, 5, 5);
+    }
+*/
