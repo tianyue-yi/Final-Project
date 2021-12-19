@@ -1,0 +1,368 @@
+// Global
+let students = [];
+let y_;
+let speed;
+let click = 0;
+let font;
+let sampleIsPlaying = false;
+//
+//let myStu;
+//
+let myAirplane;
+
+function preload() {
+  // general
+  snapCamera = loadSound ('camera_shutter_click.mp3');
+  celebration2 = loadSound ('game_celebration_w_Int.mp3');
+  stu1 = loadAnimation ('stu_anismaller1.png', 'stu_anismaller3.png', 'stu_anismaller1.png', 'stu_anismaller2.png');
+  
+  sit = loadImage ('stu_anismaller1.png');
+  
+  // Scene 1
+  chatting1 = loadImage ('stu_anismaller3.png');
+  chatting2 = loadImage ('stu_anismaller2.png');
+  
+  // Scene 2
+  yawn = loadAnimation ('stu_yawn0.png', 'stu_yawn1.png', 'stu_yawn2.png', 'stu_yawn3.png');
+  //nap = loadImage ('stu_liedown1.png');
+  nap = loadAnimation ('stu_anismaller1.png', 'stu_liedown1.png');
+  yawning = loadImage ('stu_yawn3.png')
+  
+  // Scene 3
+  myAirplane = new airplane (500, 0);
+  
+  font = loadFont ('Century Gothic Bold.otf');
+}
+
+function setup() {
+  createCanvas(800, 600);
+  frameRate(10);
+  speed = 0.8;
+  
+  // Scene 1
+  students [0] = new stu (170, 150);
+  students [1] = new stu (170, 250); // upper left
+  students [2] = new stu (370, 150);
+  students [3] = new stu (370, 250); // upper right
+  students [4] = new stu (170, 400);
+  students [5] = new stu (170, 500); // lower left
+  students [6] = new stu (370, 400);
+  students [7] = new stu (370, 500); // lower right
+  y_ = 400;
+  
+  //
+  yawningSound = createAudio ('tired-man-yawns.mp3');
+  //
+  myAirplane = new airplane (500, 0);
+}
+
+function draw () {
+  background (220);
+  
+  classroom ();
+  for (let i = 0; i < students.length; i ++){
+    students[i].vibe ();
+  }
+  
+  if (millis() > 3000) { // first scene happens automatically after 2s
+    //students [0].chat1 ();
+    
+    if (click == 0) {
+      students [1].chat2 ();
+      students [0].chat1 ();
+      frame (mouseX, mouseY);
+    }
+    
+    
+    //translate (-170, -150)
+    //frame (mouseX, mouseY);
+    
+    if (click == 1) { // The first bulletin board
+      niceChat ();
+    }
+    
+    if (click == 2) {
+      
+      students.splice (4, 1);
+      
+      students [1].stopChatting ();
+      students [0].stopChatting ();
+      
+      console.log (students);
+      click ++;
+    }
+    
+    if (click == 3) {
+      
+      let goingUp = 1.2;
+      
+      noFill ();
+      stroke (150);
+      strokeWeight (2);
+      rect (140, y_, 30, 45);
+      rect (140, y_, 10, 45);
+      stu1.draw (170, y_ + 20);
+      
+      if (y_ < 280) {
+        goingUp = 0;
+      } else {
+        y_ -= goingUp; // probably bc speed = -speed after calling chat2 
+      }
+            
+    }
+  }
+  
+  // Scene 2
+
+  if (y_ <= 280) {
+    if (click == 3) {
+      yawningSound.play();
+      yawningSound.noLoop();
+      
+      students.splice (4, 1);
+      noFill ();
+      stroke (150);
+      strokeWeight(2);
+      
+      rect (140, 480, 10, 45);
+      rect (140, 480, 30, 45);
+      yawn.draw (170, 500);
+      
+      rect (340, 380, 10, 45);
+      rect (340, 380, 30, 45);
+      rect (340, 480, 10, 45); //370, 400
+      rect (340, 480, 30, 45);
+
+      frame (mouseX, mouseY);
+      stu1.draw (370, 400);
+      stu1.draw (370, 500);
+      //click ++;
+    }
+    //click ++;
+  }
+  
+  if (click == 4) { // Second board
+
+    bulletinBoard ();
+    sleepyNow ();
+    //image (nap, 320, 365, 99, 70);
+    //image (nap, 320, 465, 99, 70);
+  }
+  
+  if (click == 5) {
+    rect (140, 480, 10, 45);
+    rect (140, 480, 30, 45);
+    yawn.draw (170, 500); // lower left corner
+    
+    rect (340, 380, 10, 45);
+    rect (340, 380, 30, 45);
+    rect (340, 480, 10, 45); //370, 400
+    rect (340, 480, 30, 45); // lower right corner
+    nap.draw (370, 400);
+    nap.draw (370, 500);
+    nap.frameDelay = 30;
+  }
+    
+  if (click == 6) {
+    myAirplane.update ();
+    myAirplane.display ();
+    frameRate(15);
+  }
+ 
+  print (click);
+}
+  
+
+
+
+function mousePressed () {
+  click ++;
+  //print (click);
+  if (click == 1 || click == 4 || click == 6) {
+    snapCamera.play (); // A time interval is needed!
+    //celebration.play ();
+    celebration2.play ();
+  }
+
+  
+}
+
+//My functions
+
+function classroom () {
+  for (let i = 170; i < 500; i += 200) {
+    for (let j = 100; j < 400; j += 250) { // 4 tables and 4 chairs
+      noFill ();
+      stroke (150);
+      strokeWeight (2);
+      rect (i, j, 60, 200); // tables
+    }
+    
+    // windows
+    rect (170, 0, 460, 30);
+    
+    // jiangtai
+    rect (800, 200, -20, 300);
+    rect (680, 250, -100, 200);
+  }
+}
+
+function frame (x, y) { // A frame to capture specific movements in class
+  for (let i = 0; i < 3; i++) {
+    stroke (0);
+    strokeWeight (4);
+    line (x, y, x + 10, y);
+    line (x, y + 160, x + 10, y + 160);
+    x += 40;
+    //y += i + 10;
+  }
+  for (let j = 0; j < 4; j++) {
+    line (x - 120, y, x - 120, y + 10);
+    line (x, y, x, y + 10);
+    y += 50;
+  }
+  // Caption down there
+  stroke(0);
+  strokeWeight (1);
+  fill(0);
+  textSize (16);
+  textFont (font);
+  text ('Click & Capture', mouseX + 2, mouseY + 180);
+}
+
+function bulletinBoard () {
+  fill (220);
+  stroke(20); 
+  strokeWeight (15);
+  rect (170, 150, 550, 350);
+  noStroke();
+  fill (91, 10, 145); // violet hightlight
+  rect (175, 400, 450, 70);
+}
+
+function niceChat () {
+  fill (0, 180);
+  noStroke ();
+  rect (0, 0, width, height);
+
+  bulletinBoard();
+  
+  noFill();
+  stroke (150);
+  strokeWeight (3);
+  rect (390, 200, 60, 200); // table in the center
+  stroke (150);
+  strokeWeight (2.5);
+  rect (360, 265, 30, 45); 
+  rect (360, 265, 10, 45); 
+  rect (360, 310, 30, 45); 
+  rect (360, 310, 10, 45); // two chairs in the center
+  image (chatting1, 365, 255, 55, 64);
+  image (chatting2, 365, 300, 55, 64);
+
+  fill (255);
+  noStroke ();
+  textSize (40);
+  textFont (font);
+  text ("NICE CHAT! NOTED!", 220, 450);
+}
+
+function sleepyNow () {
+  noFill();
+  stroke (150);
+  strokeWeight (3);
+  rect (390, 200, 60, 200); // table in the center
+  stroke (150);
+  strokeWeight (2.5);
+  rect (360, 268, 30, 45); 
+  rect (360, 268, 10, 45); // One chairs in the center
+  image (yawning, 365, 255, 61, 71);
+  
+  fill (255);
+  noStroke ();
+  textSize (40);
+  textFont (font);
+  text ("SLEPPY NOW! AW~", 220, 450);
+}
+
+
+class stu {
+  constructor (x, y) {
+    this.x = x;
+    this.y = y;
+  }
+  
+  /*
+  sit () {
+    image (sit, this.x, this.y, 55, 64);
+  }
+  */
+  
+  vibe () { // Overview of the classroom - loadAnimation
+    
+    rect (this.x - 30, this.y - 20 , 30, 45);
+    rect (this.x - 30, this.y - 20 , 10, 45);
+    stu1.draw (this.x, this.y);
+    stu1.frameDelay = 10;
+  }
+  
+  stopChatting () {
+    speed = 0;
+  }
+
+  chat1 () { // person on the top (170, 150)
+    this.y += speed;
+    if (this.y > 175 || this.y < 152) {
+      speed = -speed;
+    }
+  }
+    
+  chat2 () {
+
+    this.y -= speed;
+    if (this.y < 220 || this.y > 248) {
+      speed = -speed; 
+    }
+  }
+  
+}
+
+
+class airplane {
+  constructor (x, y) {
+    this.pos = createVector (x, y);
+    this.vel = createVector (0, 0);
+    this.acc = createVector (0, 0);
+    this.angle = PI/2;
+    this.r = 15;
+  }
+
+  update () {
+    
+    //this.vel.add(this.acc);
+    //this.vel = createVector (1, 1);
+    
+    if (millis() > 1000) {
+      this.angle += 0.08; // ORDERRRRRR!
+    }
+    this.vel = p5.Vector.fromAngle (this.angle); // Trail circle or sin?
+    this.vel.mult (20);
+    this.pos.add (this.vel);
+  
+  }
+  
+  display () {
+    stroke (0);
+    strokeWeight (2);
+    fill (220);
+    push();
+    translate (this.pos.x, this.pos.y);
+    this.angle = this.vel.heading();
+    rotate (this.angle);
+    
+    triangle (this.r + 8, this.r - 10, this.r - 20, this.r - 17, this.r - 15, this.r - 5);
+    triangle (this.r + 8, this.r - 8, this.r - 20, this.r + 7, this.r - 15, this.r - 5);
+    
+    pop();
+  }
+}
