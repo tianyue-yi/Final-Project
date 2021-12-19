@@ -1,0 +1,177 @@
+let stu;
+let speedX = 1;
+let speedY = 1;
+let a = 10;
+let b = 50;
+
+function setup() {
+  createCanvas(800, 600);
+}
+
+function draw() {
+  background(220);
+  walkIn (170, 500);
+}
+
+  
+function walkIn (x, y) {
+
+  push (); 
+  
+  if (x == 170 && y == 500) { // back 4
+    a += speedX; // EXECUTED ONLY ONCE
+    if (a >= 170) {
+      speedX = 0;
+      translate (170 + 50, -50-60);
+      rotate (PI/2);
+      a += speedY;
+      if (a >= 400 + 170) {
+        speedY = 0;
+      }    
+    }
+    triangle (a, b, a + 20, b + 7, a, b + 14);
+  }
+
+  if (x == 170 && y == 400) { // back 3
+      a += speedX;
+    triangle (a, b, a + 20, b + 7, a, b + 14);
+      if (a >= 170) {
+          speedX = 0;
+          b += speedY;
+      }
+      if (b >= 400) {
+          speedY = 0;
+      }
+  }
+
+  if (x == 170 && y == 250) { // back 2
+      a += speedX;
+      if (a >= 170) {
+          speedX = 0;
+          b += speedY;
+      }
+      if (b >= 250) {
+          speedY = 0;
+      }
+  }
+
+  if (x == 170 && y == 150) { // back 1
+      a += speedX;
+      if (a >= 170) {
+          speedX = 0;
+          b += speedY;
+      }
+      if (b >= 150) {
+          speedY = 0;
+      }
+  }
+
+  if (x == 370 && y == 500) { // front 4
+      a += speedX;
+      if (a >= 370) {
+          speedX = 0;
+          b += speedY;
+      }
+      if (b >= 500) {
+          speedY = 0;
+      }
+  }
+
+  if (x == 370 && y == 400) { // front 3
+      a += speedX;
+      if (a >= 370) {
+          speedX = 0;
+          b += speedY;
+      }
+      if (b >= 400) {
+          speedY = 0;
+      }
+  }
+
+  if (x == 370 && y == 250) { // front 2
+      a += speedX;
+      if (a >= 370) {
+          speedX = 0;
+          b += speedY;
+      }
+      if (b >= 250) {
+          speedY = 0;
+      }
+  }
+
+  if (x == 370 && y == 150) { // front 1
+      a += speedX;
+      if (b >= 370) {
+          speedX = 0;
+          b += speedY;
+      }
+      if (b >= 150) {
+          speedY = 0;
+      }
+  }
+  pop();
+  print (a, b);
+}
+
+
+
+	//push (); 
+  	/*
+		if (this.x == 170 && this.y == 500) { // back 4
+			a += speedX; // EXECUTED ONLY ONCE
+			if (a >= 170) {
+				speedX = 0;
+				translate (170 + 50, -50-60);
+				rotate (PI/2);
+				a += this.speedY;
+				if (a >= 400 + 170) {
+					speedY = 0;
+				}
+			}
+			//triangle (this.a, this.b, this.a + 20, this.b + 7, this.a, this.b + 14);
+			triangle (a, b, a + 20, b + 7, a, b + 14);
+		}
+		
+		if (this.x == 170 && this.y == 400) { // back 3
+				a += speedX; // EXECUTED ONLY ONCE
+				if (a >= 170) {
+					speedX = 0;
+					translate (170 + 50, -50-60);
+					rotate (PI/2);
+					a += speedY;
+					if (a >= 300 + 170) {
+						speedY = 0;
+					}    
+				}
+			triangle (a, b, a + 20, b + 7, a, b + 14);
+			}
+
+		if (this.x == 170 && this.y == 250) { // back 2
+				a += speedX; // EXECUTED ONLY ONCE
+				if (a >= 170) {
+					speedX = 0;
+					translate (170 + 50, -50-60);
+					rotate (PI/2);
+					a += speedY;
+					if (a >= 150 + 170) {
+						speedY = 0;
+					}
+				}
+			triangle (a, b, a + 20, b + 7, a, b + 14);
+			}
+		
+		if (this.x == 170 && this.y == 150) { // back 1
+				a += speedX; // EXECUTED ONLY ONCE
+				if (a >= 170) {
+					speedX = 0;
+					translate (170 + 50, -50-60);
+					rotate (PI/2);
+					a += speedY;
+					if (a >= 50 + 170) {
+						speedY = 0;
+					}    
+				}
+			triangle (a, b, a + 20, b + 7, a, b + 14);
+			}
+			*/
+	//pop ();
