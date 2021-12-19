@@ -1,0 +1,110 @@
+let walkin = [500, 400, 250, 150];
+let myStu = [];
+
+let pos;
+let velX;
+let velY;
+let y;
+
+function setup() {
+  createCanvas(800, 600);
+  // walkin array
+  //walkin [0] = createVector (0, 500);
+  //walkin [1] = createVector (0, 400);
+  //walkin [2] = createVector (0, 250);
+  //walkin [3] = createVector (0, 100);
+  
+  //pos = createVector (0, 50);
+  //velX = createVector (1, 0);
+  //velY = createVector (0, 1);
+  
+  myStu [0] = new walkIn (170, 150);
+  myStu [1] = new walkIn (170, 250); // upper left
+  myStu [2] = new walkIn (370, 150);
+  myStu [3] = new walkIn (370, 250); // upper right
+  myStu [4] = new walkIn (170, 400);
+  myStu [5] = new walkIn (170, 500); // lower left
+  myStu [6] = new walkIn (370, 400);
+  myStu [7] = new walkIn (370, 500); // lower right
+  
+}
+
+function draw() {
+  background(220);
+
+  noStroke();
+  fill (100);
+  /*
+  WalkIn (250);
+  WalkIn (150);
+  */
+  
+  for (let i = 0; i < myStu.length; i ++) {
+    
+    myStu[i].update ();
+    myStu[i].show ();
+  }
+  
+}
+
+class walkIn { // stu seek their chairs
+  constructor(x, y) {
+    this.stu = createVector(0, 50); // (170, 50)
+    this.chair = createVector(x, y); // (170, [i])
+    //this.pos = createVector(0, 50);
+    
+    this.velX = createVector(1, 0);
+    this.velY = createVector(0, 1);
+	//this.vel.mult(10);
+    this.r = 10;
+  }
+  
+  update() {
+    
+    this.stu.add(this.velX);
+    
+    if (this.stu.x >= this.chair.x) {
+      this.stu.sub(this.velX);
+      this.stu.add(this.velY);
+    }
+    if (this.stu.y >= this.chair.y) {
+      this.stu.sub(this.velY);
+    }
+    
+  }
+
+  show() {
+    
+    stroke(0);
+    strokeWeight(2);
+    fill(255, 100);
+    push();
+    translate(this.stu.x, this.stu.y);
+    if (this.stu.y > 50) {
+      this.angle = this.velY.heading();
+    }
+    rotate(this.angle);
+    triangle (this.r + 8, this.r - 10, this.r - 20, this.r - 17, this.r - 15, this.r - 5);
+    print (this.stu.x, this.stu.y);
+    pop();
+    
+  }
+  
+}
+
+/*
+function WalkIn (y) {
+  pos.add(velX);
+  triangle (pos.x, pos.y, pos.x + 20, pos.y + 7, pos.x, pos.y + 14);
+  if (pos.x >= 170) { 
+    pos.sub (velX);
+    pos.add (velY);
+    if (pos.y >= y) {
+      pos.sub (velY);
+      triangle (pos.x, pos.y, pos.x + 20, pos.y + 7, pos.x, pos.y + 14);
+    }
+  }
+  print (pos.x, pos.y);
+}
+  
+*/
