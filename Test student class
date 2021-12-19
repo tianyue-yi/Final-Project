@@ -1,0 +1,280 @@
+// Global
+let students = [];
+let x = 140;
+let y1 = 130;
+let y2 = 230;
+let speed;
+let click = 0;
+let font;
+//
+let myStu;
+//
+let myAirplane;
+
+function preload() {
+
+  stu1 = loadAnimation ('stu_anismaller1.png', 'stu_anismaller3.png', 'stu_anismaller1.png', 'stu_anismaller2.png');
+  stu2 = loadAnimation ('stu_anismaller1.png', 'stu_anismaller2.png', 'stu_anismaller1.png', 'stu_anismaller3.png');
+  sit = loadImage ('stu_anismaller1.png');
+  chatting1 = loadImage ('stu_anismaller3.png');
+  chatting2 = loadImage ('stu_anismaller2.png');
+  // Scene 2
+  yawn = loadAnimation ('stu_yawn0.png', 'stu_yawn1.png', 'stu_yawn2.png', 'stu_yawn3.png');
+  
+  font = loadFont ('Century Gothic Bold.otf');
+}
+
+function setup() {
+  createCanvas(800, 600);
+  frameRate(10);
+  speed = 0.8;
+  
+  // Scene 1
+  students [0] = new stu (170, 150);
+  students [1] = new stu (170, 250); // upper left
+  students [2] = new stu (370, 150);
+  students [3] = new stu (370, 250); // upper right
+  students [4] = new stu (170, 400);
+  students [5] = new stu (170, 500); // lower left
+  students [6] = new stu (370, 400);
+  students [7] = new stu (370, 500); // lower right
+  
+  //
+  myAirplane = new airplane (500, 0);
+}
+
+function draw () {
+  background (220);
+  
+  classroom ();
+  for (let i = 0; i < students.length; i ++){
+    students[i].vibe ();
+  }
+  
+  if (millis() > 3000) { // first scene happens automatically after 2s
+    //students [0].chat1 ();
+    students [1].chat2 ();
+    students [0].chat1 ();
+    //translate (-170, -150)
+    //frame (mouseX, mouseY);
+    
+    if (click == 1) { // The first bulletin board
+      //if (y1 + 75 > y2) { // Approaching
+      niceChat ();
+      //}
+    }
+    
+    if (click == 2) {
+      //students[4].distraction1 ();
+      students.splice (0, 1);
+      for (let i = 0; i < students.length; i ++){
+        students[i].distraction1 ();
+      }
+      //rect (170, 150, 30, 45);
+      //rect (170, 150, 10, 45);
+      //image (chatting1, 170, 150, 60, 69);
+      
+      //let chatterArray = [new stu (170, 150), new stu (170, 250)];
+      //students.splice (0, 0, new stu (170, 150));
+      
+      //students.push (new stu (170, 150));
+      //students.push (new stu (170, 250));
+      console.log (students);
+      //students.splice (0, 1);
+      //students.push (new stu (140, 130))
+      //students [0]. display_chatting1 ();
+      //students [4].distraction1 ();
+      click ++;
+    }
+    
+    frame (mouseX, mouseY);
+  }
+  loop();
+}
+  
+
+
+
+function mousePressed () {
+  click ++;
+  //print (click);
+}
+
+//My functions
+
+function classroom () {
+  for (let i = 170; i < 500; i += 200) {
+    for (let j = 100; j < 400; j += 250) { // 4 tables and 4 chairs
+      noFill ();
+      stroke (150);
+      strokeWeight (2);
+      rect (i, j, 60, 200); // tables
+      // windows
+      // jiangtai
+    }
+  }
+}
+
+function frame (x, y) { // A frame to capture specific movements in class
+  for (let i = 0; i < 3; i++) {
+    stroke (0);
+    strokeWeight (4);
+    line (x, y, x + 10, y);
+    line (x, y + 160, x + 10, y + 160);
+    x += 40;
+    //y += i + 10;
+  }
+  for (let j = 0; j < 4; j++) {
+    line (x - 120, y, x - 120, y + 10);
+    line (x, y, x, y + 10);
+    y += 50;
+  }
+}
+
+function bulletinBoard () {
+  fill (220);
+  stroke(20); 
+  strokeWeight (15);
+  rect (200, 150, 550, 350);
+  noStroke();
+  fill (91, 10, 145);
+  rect (205, 400, 350, 70);
+}
+
+function niceChat () {
+  fill (0, 180);
+  noStroke ();
+  rect (0, 0, width, height);
+
+  bulletinBoard();
+  
+  noFill();
+  stroke (150);
+  strokeWeight (3);
+  rect (390, 200, 60, 200); // table
+  stroke (150);
+  strokeWeight (2.5);
+  rect (360, 265, 30, 45); 
+  rect (360, 265, 10, 45); 
+  rect (360, 310, 30, 45); 
+  rect (360, 310, 10, 45); // two chairs
+  image (chatting1, 365, 255, 55, 64);
+  image (chatting2, 365, 300, 55, 64);
+  frame (mouseX, mouseY);
+
+  fill (255);
+  noStroke ();
+  textSize (40);
+  textFont (font);
+  text ("NICE CHAT!", 250, 450);
+}
+
+
+class stu {
+  constructor (x, y) {
+    //push();
+    //translate (this.x, this.y);
+    this.x = x;
+    this.y = y;
+    //pop ();
+  }
+  
+  sit () {
+    image (sit, this.x, this.y, 55, 64);
+  }
+  
+  vibe () { // Overview of the classroom - loadAnimation
+    
+    rect (this.x - 30, this.y - 20 , 30, 45);
+    rect (this.x - 30, this.y - 20 , 10, 45);
+    stu1.draw (this.x, this.y);
+    stu1.frameDelay = 10;
+  }
+  
+  display_chatting1 () { // draw one stu and his chair
+    rect (this.x, this.y + 10, 30, 45);
+    rect (this.x, this.y + 10, 10, 45);
+    image (chatting1, this.x, this.y, 60, 69);
+    stu1.frameDelay = 10;
+  }
+  
+  display_chatting2 () { // draw one stu and his chair
+    rect (this.x, this.y, 30, 45);
+    rect (this.x, this.y, 10, 45);
+    image (chatting2, this.x + 30, this.y + 20, 55, 64);
+    stu1.frameDelay = 10;
+  }
+  
+  chat1 () { // person on the top
+    this.y += speed;
+    if (this.y > 175 || this.y < 150) {
+      speed = -speed;
+    }
+  }
+    
+  chat2 () {
+    //push ();
+    //translate (this.x, this.y);
+    this.y -= speed;
+    if (this.y < 220 || this.y > 250) {
+      speed = -speed; 
+    }
+    
+    //print (this.y);
+    //pop ();
+  }
+  
+  distraction1 () { // (170, 400) 
+    this.y -= 2 * speed; // probably bc speed = -speed after calling chat2 
+    if (this.y < 300) {
+      this.y += 2 * speed;
+    }
+    print (this.y);
+  }
+}
+
+
+
+
+
+
+
+
+class airplane {
+  constructor (x, y) {
+    this.pos = createVector (x, y);
+    this.vel = createVector (0, 0);
+    this.acc = createVector (0, 0);
+    this.angle = PI/2;
+    this.r = 15;
+  }
+
+  update () {
+    
+    //this.vel.add(this.acc);
+    //this.vel = createVector (1, 1);
+    
+    if (millis() > 400) {
+      this.angle += 0.05; // ORDERRRRRR!
+    }
+    this.vel = p5.Vector.fromAngle (this.angle); 
+    this.vel.mult (10);
+    this.pos.add (this.vel);
+  
+  }
+  
+  display () {
+    stroke (0);
+    strokeWeight (2);
+    fill (220);
+    push();
+    translate (this.pos.x, this.pos.y);
+    this.angle = this.vel.heading();
+    rotate (this.angle);
+    
+    triangle (this.r + 8, this.r - 10, this.r - 20, this.r - 17, this.r - 15, this.r - 5);
+    triangle (this.r + 8, this.r - 8, this.r - 20, this.r + 7, this.r - 15, this.r - 5);
+    
+    pop();
+  }
+}
