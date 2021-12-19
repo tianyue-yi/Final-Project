@@ -1,0 +1,62 @@
+let myAirplane;
+
+function setup() {
+  createCanvas(800, 800);
+  myAirplane = new airplane(500, 0);
+  
+}
+
+function draw() { 
+  background(220);
+  myAirplane.update ();
+  myAirplane.display ();
+}
+
+class airplane {
+  constructor (x, y) {
+    this.pos = createVector (x, y);
+    //this.vel = p5.Vector.random2D(); 
+    this.vel = createVector (0, 0);
+    //this.vel = p5.Vector.fromAngle (this.angle);
+    this.acc = createVector (0, 0);
+    this.angle = PI/2;
+    this.r = 15;
+  }
+  
+  applyForce (force) {
+    
+  }
+  
+  update () {
+    
+    //this.vel.add(this.acc);
+    //this.vel = createVector (1, 1);
+    
+    
+    if (millis() > 1000) {
+      this.angle += 0.025; // ORDERRRRRR!
+    }
+    
+    this.vel = p5.Vector.fromAngle (this.angle); 
+    this.vel.mult (3);
+    this.pos.add (this.vel);
+  
+  }
+  
+  display () {
+    stroke (0);
+    strokeWeight (2);
+    fill (220);
+    push();
+    translate (this.pos.x, this.pos.y);
+    this.angle = this.vel.heading();
+    rotate (this.angle);
+    //triangle (this.r, this.r - 10, this.r - 15, this.r - 15, this.r - 15, this.r - 5);
+    triangle (this.r + 8, this.r - 10, this.r - 20, this.r - 17, this.r - 15, this.r - 5);
+    triangle (this.r + 8, this.r - 8, this.r - 20, this.r + 7, this.r - 15, this.r - 5);
+    //triangle (this.r + 22, this.r + 10, this.r + 10, this.r, this.r + 10, this.r - 20);
+    //triangle (this.pos.x - 2, this.pos.y + 10, this.pos.x + 10, this.pos.y, this.pos.x + 10, this.pos.y - 20);
+    //triangle (this.pos.x + 22, this.pos.y + 10, this.pos.x + 10, this.pos.y, this.pos.x + 10, this.pos.y - 20);
+    pop();
+  }
+}
