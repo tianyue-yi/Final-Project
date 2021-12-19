@@ -1,0 +1,644 @@
+// Global
+let students = [];
+let y_;
+let speed;
+let font;
+let scene = 0;
+let allSet = false;
+// Wished to have a time interval - but failed
+let timeCount = 20000; 
+let nextChange = timeCount;
+
+let stuWalk = [];
+let myProf;
+
+// Scene 3
+let myAirplane;
+let attractor;
+
+function preload() {
+  // general
+  font = loadFont ('DkCrayonCrumble-ddll.ttf');
+  glasses = loadImage ('glasses.png');
+  snapCamera = loadSound ('camera_shutter_click.mp3');
+  celebration2 = loadSound ('game_celebration_w_Int.mp3');
+  bgm = loadSound ('bgm.m4a');
+  stu1 = loadAnimation ('stu_anismaller1.png', 'stu_anismaller3.png', 'stu_anismaller1.png', 'stu_anismaller2.png');
+  
+  //
+  professor = loadImage ('prof.png');
+  professor_staring = loadImage ('prof_faceClass.png');
+  professor_yelling = loadImage ('prof_madAtClass.png');
+  yellingSound = createAudio ('angry-monster-scream.wav');
+  walk = loadImage ('stu_walk.png');
+  
+  // Chatting
+  chatting1 = loadImage ('stu_anismaller3.png');
+  chatting2 = loadImage ('stu_anismaller2.png');
+  
+  //sitting
+  sitting = loadImage ('stu_anismaller1.png');
+  
+  // Yawning 
+  yawningSound = createAudio ('tired-man-yawns.mp3');
+  yawn = loadAnimation ('stu_yawn0.png', 'stu_yawn1.png', 'stu_yawn2.png', 'stu_yawn3.png');
+  nap = loadAnimation ('stu_anismaller1.png', 'stu_liedown1.png');
+  lying = loadImage ('stu_liedown1.png');
+  yawning = loadImage ('stu_yawn3.png')
+  
+  // Looking upwards
+  flyingPlane = createAudio ('flying-fast-swoosh.wav');
+  look = loadAnimation ('stu_yawn0.png', 'stu_look1.png', 'stu_look2.png')
+}
+
+function setup() {
+  createCanvas(800, 600);
+  frameRate(30);
+  speed = 0.5;
+  
+  // walking in 
+  stuWalk [4] = new walkIn (140, 130, -200);
+  stuWalk [5] = new walkIn (140, 230, -240); // upper left
+  stuWalk [6] = new walkIn (140, 370, -280);
+  stuWalk [7] = new walkIn (140, 470, -320); // lower left
+  stuWalk [0] = new walkIn (340, 130, -40);
+  stuWalk [1] = new walkIn (340, 230, -80); // upper right
+  stuWalk [2] = new walkIn (340, 370, -120);
+  stuWalk [3] = new walkIn (340, 470, -160); // lower right
+  
+  myProf = new prof (680, 300);
+  
+  
+  // Scene 1
+  students [0] = new stu (170, 150);
+  students [1] = new stu (170, 250); // upper left
+  students [2] = new stu (370, 150);
+  students [3] = new stu (370, 250); // upper right
+  students [4] = new stu (170, 400);
+  students [5] = new stu (170, 500); // lower left
+  students [6] = new stu (370, 400);
+  students [7] = new stu (370, 500); // lower right
+  y_ = 400;
+  
+  //
+  //yawningSound = createAudio ('tired-man-yawns.mp3');
+  //
+  myAirplane = new airplane(200, -90);
+  attractor = new Attractor(width / 2, height / 2, 100);
+  //flyingPlane = createAudio ('flying-fast-swoosh.wav');
+  
+  bgm.play();
+  bgm.setLoop(true);
+
+}
+
+function draw () {
+  background (230);
+  print (scene); 
+  classroom ();
+
+  if (millis() < 18000) {
+    for (let i = 0; i < stuWalk.length; i ++){ // students walk in
+      stuWalk[i].update ();
+      stuWalk[i].show ();
+    } 
+    fill(230);
+    rect (0, 20, 20, 100);
+    
+  } else if (scene == 0) { 
+    for (let i = 0; i < students.length; i ++){
+      students [i].vibe ();
+    }
+    myProf.walk();
+    myProf.showUp();
+    
+    arrowToNext ();
+    if (allSet) {
+      scene ++;
+      allSet = false;
+    }
+    
+  } else if (scene == 1) { // After a time interval
+    for (let i = 0; i < students.length; i ++) {
+      students [i].vibe ();
+    }
+    students [1].chat2 ();
+    students [0].chat1 ();
+    
+    myProf.walk();
+    myProf.showUp();
+    frame (mouseX, mouseY);
+    
+  } else if (scene == 2) { // second click -> capture and board shows up
+    bulletinBoard ("NICE CHAT! NOTED!");
+    niceChat ();
+    
+  } else if (scene == 3) { // third click -> board's gone and a distraction is up
+    for (let i = 0; i < 4; i ++) {
+      students [i].vibe ();
+    }
+    students [5].vibe ();
+    students [6].vibe ();
+    students [7].vibe ();
+    students [1].stopChatting ();
+    students [0].stopChatting ();
+    
+    let goingUp = 1;
+    rect (140, y_, 30, 45);
+    rect (140, y_, 10, 45);
+    stu1.draw (170, y_ + 15);
+    
+    if (y_ < 280) { // the first distraction ends .
+      goingUp = 0; 
+    } else {
+      y_ -= goingUp; 
+    }
+    // Prof staring
+    image (professor_staring, 680, 300, 70, 87)
+    
+    arrowToNext ();
+    if (allSet) {
+      scene++;
+      allSet = false;
+    }
+    
+  } else if (scene == 4) {
+    yawningSound.play();
+    yawningSound.noLoop();
+    
+    for (let i = 0; i < 4; i ++){
+      students[i].vibe ();
+    }
+    students[6].vibe();
+    students[7].vibe();
+    let distractedStu = new stu (170, y_ + 15);
+    distractedStu.vibe ();
+    noFill ();
+    stroke (150);
+    strokeWeight(2);
+    rect (140, 480, 10, 45);
+    rect (140, 480, 30, 45);
+    yawn.draw (170, 500);
+    yawn.frameDelay = 15;
+    
+    myProf.walk();
+    myProf.showUp();    
+    frame(mouseX, mouseY);
+    
+  } else if (scene == 5) { // the second board      
+    bulletinBoard ("SLEEPY NOW, AWW");
+    sleepyNow (); 
+    
+  } else if (scene == 6) {
+    // the second distraction
+    yawningSound.play();
+    yawningSound.noLoop();
+    
+    for (let i = 0; i < 4; i++) {
+      students[i].vibe();
+    }
+    let distractedStu = new stu (170, y_ + 10);
+    distractedStu.vibe ();
+    rect (140, 480, 10, 45);
+    rect (140, 480, 30, 45);
+    yawn.draw (170, 500); 
+    yawn.frameDelay = 15; // lower left corner
+
+    rect (340, 380, 10, 45);
+    rect (340, 380, 30, 45);
+    rect (340, 480, 10, 45); //370, 400
+    rect (340, 480, 30, 45); // lower right corner
+    nap.draw (370, 400);
+    nap.draw (370, 500);
+    nap.frameDelay = 80;
+    image (professor_staring, 680, 300, 70, 87)
+    
+    arrowToNext ();
+    if (allSet) { // Third scene is up!
+      scene ++;
+      allSet = false;
+    }
+  
+  } else if (scene == 7) {
+    let distractedStu = new stu (170, y_ + 15);
+    distractedStu.vibe ();
+    for (let i = 0; i < 4; i++) {
+      students[i].vibe();
+    }
+    rect (340, 380, 10, 45);
+    rect (340, 380, 30, 45);
+    rect (340, 480, 10, 45); 
+    rect (340, 480, 30, 45);
+    image (lying, 320, 360, 99, 74);
+    image (lying, 320, 460, 99, 74); // Two stu lying on the table
+    rect (140, 480, 10, 45);
+    rect (140, 480, 30, 45);
+    yawn.draw (170, 500);
+    //yawn.frameDelay = 20;
+    
+    //flyingPlane.reverseBuffer();
+    flyingPlane.play();
+    //flyingPlane.playMode('sustain');
+    //flyingPlane.noLoop();
+    
+    myAirplane.update();
+    myAirplane.show();
+    attractor.attract(myAirplane);
+    
+    myProf.walk();
+    myProf.showUp();    
+    frame (mouseX, mouseY);
+
+  } else if (scene == 8) { // the third board shows up
+    bulletinBoard ("LOOK! A PAPER PLANE!");
+    lookUpwards ()
+    
+  } else if (scene == 9) { // 2 stu look upwards        
+    students[0].vibe();
+    students[1].vibe();
+    let distractedStu = new stu (170, y_ + 15);
+    distractedStu.vibe (); // 3 chatting on the upper left corner
+    rect (140, 480, 10, 45);
+    rect (140, 480, 30, 45);
+    yawn.draw (170, 500);
+    yawn.frameDelay = 20;
+    rect (370, 380, 10, 45);
+    rect (370, 380, 30, 45);
+    rect (370, 480, 10, 45); 
+    rect (370, 480, 30, 45);
+    image (lying, 320, 360, 99, 74);
+    image (lying, 320, 460, 99, 74); // 2 lying on the lower right corner
+    
+    rect (340, 130, 10, 45);
+    rect (340, 130, 30, 45);
+    rect (340, 230, 10, 45);
+    rect (340, 230, 30, 45);
+    look.draw (370, 150);
+    look.draw (370, 250);
+    look.frameDelay = 30;
+    
+    image (professor_staring, 680, 300, 70, 87)
+    
+    myAirplane.update();
+    myAirplane.show();
+    attractor.attract(myAirplane);
+    flyingPlane.play();
+    flyingPlane.noLoop();
+    
+    arrowToNext ();
+    if (allSet) { // Third scene is up!
+      scene ++;
+      allSet = false;
+    }
+  
+  } else if (scene == 10) {
+    for (let i = 0; i < 4; i++) {
+      students [i].sit();
+    }
+    students [5].sit();
+    students [6].sit();
+    students [7].sit();
+    let distractedStu = new stu (170, y_ + 15);
+    distractedStu.sit();
+    
+    // Prof yelling
+    image(professor_yelling, 680, 300, 75, 90);
+    yellingSound.play ();
+    yellingSound.noLoop();
+  }
+
+}
+  
+//}
+
+function mousePressed () { // rect (580, 520, 100, 50); -> location
+  if (mouseX > 580 && mouseX < 680 && mouseY > 520 && mouseY < 570) {
+    allSet = true;
+    //scene ++;
+  } // frame needs clicks, too!!!
+  if (scene == 1 || scene == 2 || scene == 4 || scene == 5 || scene == 7 || scene == 8) {
+    scene ++;
+    if (scene == 1 || scene == 2 || scene == 4 || scene == 5 || scene == 7) {  
+      snapCamera.play (); // A time interval is needed!
+      //celebration.play ();
+      celebration2.play ();
+    }
+  }
+  //}
+}
+
+////////////////////////////////////////////////////
+
+
+function classroom () {
+  for (let i = 170; i < 500; i += 200) {
+    for (let j = 100; j < 400; j += 250) { // 4 tables and 4 chairs
+      noFill ();
+      stroke (150);
+      strokeWeight (2);
+      rect (i, j, 60, 200); // tables
+    }
+    // door 
+    fill(230);
+    rect (0, 20, 20, 100);
+    // windows
+    rect (170, 0, 460, 30);
+
+    // Teaching area
+    rect (800, 200, -20, 300);
+    rect (680, 250, -100, 200);
+  }
+}
+
+function arrowToNext () {
+  fill(91, 10, 145); // violet
+  noStroke();
+  rect (580, 520, 100, 50);
+  noFill();
+  stroke (255)
+  strokeWeight(6);
+  line (595, 545, 665, 545);
+  fill(255);
+  noStroke();
+  triangle (650, 530, 650, 560, 670, 545);
+}
+
+function frame (x, y) { // A frame to capture specific movements in class
+  for (let i = 0; i < 3; i++) {
+    stroke (0);
+    strokeWeight (4);
+    line (x, y, x + 10, y);
+    line (x, y + 160, x + 10, y + 160);
+    x += 40;
+    //y += i + 10;
+  }
+  for (let j = 0; j < 4; j++) {
+    line (x - 120, y, x - 120, y + 10);
+    line (x, y, x, y + 10);
+    y += 50;
+  }
+  // Caption down there
+  stroke(0);
+  strokeWeight (1);
+  fill(0);
+  textSize (22);
+  textFont (font);
+  text ('Click & Capture', mouseX + 2, mouseY + 180);
+}
+
+
+function bulletinBoard (desc) {
+  fill (0, 220);
+  noStroke ();
+  rect (0, 0, width, height);
+	
+  fill (235);
+  stroke(20); 
+  strokeWeight (15);
+  rect (170, 150, 550, 350);
+  noStroke();
+  fill (91, 10, 145); // violet hightlight
+  rect (175, 400, 450, 70);
+	
+  noFill();
+  stroke (150);
+  strokeWeight (3);
+  rect (390, 200, 60, 200); // table in the center
+	
+  fill (255);
+  noStroke ();
+  textSize (40);
+  textFont (font);
+  text (desc, 220, 450);
+  
+  push();
+  translate (500, -460);
+  rotate (PI/3);
+  image (glasses, 550, 130, 300, 210)
+  pop();
+}
+
+function niceChat () {
+  noFill();
+  stroke (150);
+  strokeWeight (2.5);
+  rect (360, 265, 30, 45); 
+  rect (360, 265, 10, 45); 
+  rect (360, 310, 30, 45); 
+  rect (360, 310, 10, 45); // two chairs in the center
+  image (chatting1, 365, 255, 55, 64);
+  image (chatting2, 365, 300, 55, 64);
+}
+
+function sleepyNow () {
+  noFill();
+  stroke (150);
+  strokeWeight (2.5);
+  rect (360, 265, 30, 45); 
+  rect (360, 265, 10, 45); // a chair
+  image (yawning, 365, 255, 61, 71);
+
+}
+
+function lookUpwards () {
+  noFill();
+  stroke (150);
+  strokeWeight (2.5); 
+  rect (360, 240, 30, 45); 
+  rect (360, 240, 10, 45); 
+  rect (360, 330, 30, 45); 
+  rect (360, 330, 10, 45); // chairs
+	
+
+  let r = 250;
+
+  translate (r + 100, -80);
+  rotate (PI/4);
+  scale (1.2);
+  stroke(0);
+  strokeWeight(3);
+  fill(255, 100);
+  triangle (r + 8, r - 10, r - 20, r - 17, r - 15, r - 5);
+  triangle (r + 8, r - 8, r - 20, r + 7, r - 15, r - 5);
+
+}
+
+
+class stu {
+  constructor (x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  sit () {
+    rect (this.x - 30, this.y - 20 , 30, 45);
+    rect (this.x - 30, this.y - 20 , 10, 45);
+    image (sitting, this.x, this.y, 61, 70);
+  }
+  
+  vibe () { // Overview of the classroom - loadAnimation
+    noFill();
+    stroke (150);
+    strokeWeight (2);
+    rect (this.x - 30, this.y - 20 , 30, 45);
+    rect (this.x - 30, this.y - 20 , 10, 45);
+    stu1.draw (this.x, this.y);
+    stu1.frameDelay = 50;
+	
+  }
+  
+  stopChatting () {
+    speed = 0;
+  }
+
+  chat1 () { // person on the top (170, 150)
+    this.y += speed;
+    if (this.y > 175 || this.y < 152) {
+      speed = -speed;
+    }
+  }
+    
+  chat2 () {
+    this.y -= speed;
+    if (this.y < 220 || this.y > 248) {
+      speed = -speed; 
+    }
+  }
+
+}
+
+
+class prof {
+  constructor (x, y) {
+    this.x = x;
+    this.y = y
+    this.pos = createVector (x, y);
+    this.vel = createVector (0, 0.5);
+    this.angle = PI;
+    //speed = 0.5;
+  }
+  
+  walk () { // same as update function
+    this.pos.add (this.vel);
+    if (this.pos.y > this.y + 100 || this.pos.y < this.y - 100) {
+      this.pos.sub(this.vel);
+      //this.vel = p5.Vector.fromAngle (this.angle); 
+      this.vel.mult (-1);
+      this.pos.add (this.vel);
+    }
+  }
+  
+  showUp () {
+    
+    push();
+    //translate(this.pos.x, this.pos.y);
+    if (this.pos.y > this.y + 100 || this.pos.y < this.y - 100) {
+      this.angle = -PI;
+    } else {
+      this.angle = 0;
+    }
+    rotate(this.angle);
+    image (professor, this.pos.x, this.pos.y, 87, 70);
+    
+    pop();
+    print (this.angle); // 
+  }
+  
+}
+
+class walkIn { // stu seek their chairs
+  constructor(x, y, x0) {
+    this.stu = createVector(x0, 50); // (170, 50)
+    this.chair = createVector(x, y); // (170, [i])
+    this.velX = createVector(2, 0);
+    this.velY = createVector(0, 2);
+	this.r = 10;
+  }
+  
+  update() {
+    this.stu.add(this.velX);
+    
+    if (this.stu.x >= this.chair.x) { // move horizontally
+      this.stu.sub(this.velX);
+      this.stu.add(this.velY);
+    }
+    if (this.stu.y >= this.chair.y) { // move vertically
+      this.stu.sub(this.velY);
+    }
+    
+  }
+
+  show() { 
+    stroke(0);
+    strokeWeight(2);
+    fill(255, 100);
+    push();
+    translate(this.stu.x, this.stu.y);
+    if (this.stu.y > 50) {
+      this.angle = this.velY.heading();
+    } else {
+      this.angle = 0;
+    }
+    rotate(this.angle);
+    imageMode (CENTER);
+	image (walk, this.r, this.r, 52, 70);
+    pop();
+    
+  }
+  
+}
+
+class airplane {
+  constructor(x, y) {
+    this.pos = createVector(x, y);
+    this.vel = createVector(0, 0);
+		//this.vel.mult(10);
+    this.acc = createVector(0, 0);
+    this.mass = 40;
+    this.r = sqrt(this.mass) * 2;
+  }
+
+  applyForce(force) {
+    let f = p5.Vector.div(force, this.mass);
+    this.acc.add(f);
+  }
+  
+  update() {
+    for (let i = 0; i< 15; i++) {
+        this.vel.add(this.acc);
+        this.pos.add(this.vel);
+        this.acc.set(0, 0);
+    }
+  }
+
+  show() {
+    stroke(0);
+    strokeWeight(2);
+    fill(255, 100);
+    push();
+    translate(this.pos.x, this.pos.y);
+    this.angle = this.vel.heading();
+    rotate(this.angle);
+    triangle (this.r + 8, this.r - 10, this.r - 20, this.r - 17, this.r - 15, this.r - 5);
+    triangle (this.r + 8, this.r - 8, this.r - 20, this.r + 7, this.r - 15, this.r - 5);
+
+    pop();
+  }
+}
+
+class Attractor {
+  constructor(x, y, m) {
+    this.pos = createVector(x, y);
+    this.mass = m;
+    this.r = sqrt(this.mass) * 2;
+  }
+
+  attract(mover) {
+    let force = p5.Vector.sub(this.pos, mover.pos);
+    let distanceSq = constrain(force.magSq(), 100, 500);
+    let G = 1;
+    let strength = (G * (this.mass * mover.mass)) / distanceSq; // The formular of gravity
+    force.setMag(strength); // SLOW DOWN
+    mover.applyForce(force); // CHANGE DIRECTIONS
+  }
+}
